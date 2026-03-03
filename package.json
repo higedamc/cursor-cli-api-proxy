@@ -1,0 +1,25 @@
+{
+  "name": "cursor-cli-api-proxy",
+  "version": "1.0.0",
+  "description": "OpenAI-compatible API that wraps Cursor Agent CLI (uses Cursor subscription).",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server/standalone.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["cursor", "cursor-cli", "openai-compatible", "api-proxy"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.3"
+  },
+  "engines": { "node": ">=20" }
+}

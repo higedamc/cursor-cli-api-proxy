@@ -1,0 +1,63 @@
+/**
+ * OpenAI-compatible API types
+ */
+
+export interface OpenAIContentPart {
+  type: "text" | "image_url";
+  text?: string;
+  image_url?: { url: string; detail?: string };
+}
+
+export type OpenAIMessageContent = string | OpenAIContentPart[] | null;
+
+export interface OpenAIChatMessage {
+  role: "system" | "user" | "assistant" | "developer";
+  content: OpenAIMessageContent;
+}
+
+export interface OpenAIChatRequest {
+  model: string;
+  messages: OpenAIChatMessage[];
+  stream?: boolean;
+  temperature?: number;
+  max_tokens?: number;
+  user?: string;
+}
+
+export interface OpenAIChatResponseChoice {
+  index: number;
+  message: { role: "assistant"; content: string };
+  finish_reason: "stop" | "length" | "content_filter" | null;
+}
+
+export interface OpenAIChatResponse {
+  id: string;
+  object: "chat.completion";
+  created: number;
+  model: string;
+  choices: OpenAIChatResponseChoice[];
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
+export interface OpenAIChatChunkDelta {
+  role?: "assistant";
+  content?: string;
+}
+
+export interface OpenAIChatChunkChoice {
+  index: number;
+  delta: OpenAIChatChunkDelta;
+  finish_reason: "stop" | "length" | "content_filter" | null;
+}
+
+export interface OpenAIChatChunk {
+  id: string;
+  object: "chat.completion.chunk";
+  created: number;
+  model: string;
+  choices: OpenAIChatChunkChoice[];
+}
