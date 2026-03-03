@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
  * Standalone server - Cursor CLI API proxy
- * Usage: CURSOR_API_KEY=xxx node dist/server/standalone.js [port]
+ * Auth: browser session (agent login) or CURSOR_API_KEY env.
+ * Usage: node dist/server/standalone.js [port]
  */
 
 import { startServer, stopServer } from "./index.js";
-import { verifyAgent } from "../subprocess/manager.js";
+import { verifyAgent, verifyAuth } from "../subprocess/manager.js";
 
 const DEFAULT_PORT = 3457;
 
@@ -20,23 +21,26 @@ async function main(): Promise<void> {
   }
 
   const skipCheck = process.argv.includes("--skip-cli-check");
-  if (!skipCheck && !process.env.CURSOR_API_KEY) {
-    console.error("Error: CURSOR_API_KEY environment variable is required.");
-    console.error("Get your key from Cursor dashboard: Integrations > User API Keys");
-    process.exit(1);
-  }
-
   if (!skipCheck) {
     console.log("Checking Cursor Agent CLI...");
-    const check = await verifyAgent();
-    if (!check.ok) {
-      console.error("Error:", check.error);
+    const agentCheck = await verifyAgent();
+    if (!agentCheck.ok) {
+      console.error("Error:", agentCheck.error);
       console.error("Install: curl https://cursor.com/install -fsS | bash");
       process.exit(1);
     }
-    console.log("  Agent CLI:", check.version || "OK\n");
+    console.log("  Agent CLI:", agentCheck.version || "OK");
+
+    console.log("Checking authentication...");
+    const authCheck = await verifyAuth();
+    if (!authCheck.ok) {
+      console.error("Error:", authCheck.error);
+      console.error("Either run 'agent login' (browser session) or set CURSOR_API_KEY.");
+      process.exit(1);
+    }
+    console.log("  Auth: OK (session or CURSOR_API_KEY)\n");
   } else {
-    console.log("Skipping CLI check (--skip-cli-check). Set CURSOR_API_KEY for chat.\n");
+    console.log("Skipping CLI check (--skip-cli-check).\n");
   }
 
   try {

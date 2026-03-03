@@ -33,11 +33,8 @@ export class CursorSubprocess extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       try {
+        // Use process.env as-is: CURSOR_API_KEY if set (API key auth), else agent uses stored session (agent login)
         const env = { ...process.env };
-        if (!env.CURSOR_API_KEY) {
-          reject(new Error("CURSOR_API_KEY environment variable is required"));
-          return;
-        }
 
         this.process = spawn("agent", args, {
           cwd: options.cwd ?? process.cwd(),
@@ -155,6 +152,31 @@ export async function verifyAgent(): Promise<{ ok: boolean; error?: string; vers
     });
     proc.on("close", (code) => {
       resolve(code === 0 ? { ok: true, version: out.trim() } : { ok: false, error: "agent exited non-zero" });
+    });
+  });
+}
+
+/**
+ * Verify that Cursor CLI is authenticated (browser session or API key).
+ * Runs `agent status`; exit code 0 means authenticated.
+ */
+export async function verifyAuth(): Promise<{ ok: boolean; error?: string }> {
+  return new Promise((resolve) => {
+    const proc = spawn("agent", ["status"], { stdio: "pipe", env: process.env });
+    let stderr = "";
+    proc.stderr?.on("data", (c: Buffer) => { stderr += c.toString(); });
+    proc.on("error", () => {
+      resolve({ ok: false, error: "agent not found" });
+    });
+    proc.on("close", (code) => {
+      if (code === 0) {
+        resolve({ ok: true });
+      } else {
+        resolve({
+          ok: false,
+          error: "Not authenticated. Run 'agent login' (browser session) or set CURSOR_API_KEY.",
+        });
+      }
     });
   });
 }

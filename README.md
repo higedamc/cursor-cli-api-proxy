@@ -7,9 +7,9 @@ Reference: [claude-max-api-proxy](https://github.com/mnemon-dev/claude-max-api-p
 ## Prerequisites
 
 1. Cursor Pro or Business subscription.
-2. Cursor Agent CLI installed and an API key:
+2. Cursor Agent CLI installed and authenticated:
    - Install: `curl https://cursor.com/install -fsS | bash`
-   - Create API key: Cursor dashboard > Integrations > User API Keys
+   - Auth: run `agent login` (browser session, recommended) or set CURSOR_API_KEY (Integrations > User API Keys).
 3. Node.js >= 20.
 
 ## Setup
@@ -22,8 +22,17 @@ npm run build
 
 ## Run
 
+**Authentication (either one):**
+
+1. **Browser session (recommended, like Claude Code CLI)**  
+   On the machine that runs the proxy, run once: `agent login`. Credentials are stored locally; no API key needed.
+2. **API key**  
+   For headless/CI: `export CURSOR_API_KEY=your_key_from_cursor_dashboard` (Cursor dashboard > Integrations > User API Keys).
+
 ```bash
-export CURSOR_API_KEY=your_key_from_cursor_dashboard
+# If using session: run once on this machine
+agent login
+
 npm start
 # Or: node dist/server/standalone.js [port]
 # Default port: 3457. Listens on 0.0.0.0 so LNVPS/remote access works.

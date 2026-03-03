@@ -3,3 +3,8 @@ dist/
 *.log
 .env
 .env.local
+# LNVPS Gitea keys (do not commit)
+lnvps_gitea_ed25519
+lnvps_gitea_ed25519.pub
+*_PUBLIC_KEY*.txt
+gen-keys.sh
