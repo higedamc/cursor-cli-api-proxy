@@ -4,6 +4,8 @@ OpenAI-compatible HTTP API that wraps Cursor Agent CLI. Uses your Cursor subscri
 
 Reference: [claude-max-api-proxy](https://github.com/mnemon-dev/claude-max-api-proxy) (same idea for Claude Code CLI).
 
+**Detailed server setup, startup, and usage guide:** [docs/SERVER-SETUP.md](docs/SERVER-SETUP.md)
+
 ## Prerequisites
 
 1. Cursor Pro or Business subscription.

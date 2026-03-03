@@ -156,19 +156,38 @@ export async function verifyAgent(): Promise<{ ok: boolean; error?: string; vers
   });
 }
 
+const AUTH_CHECK_TIMEOUT_MS = 15000;
+
 /**
  * Verify that Cursor CLI is authenticated (browser session or API key).
  * Runs `agent status`; exit code 0 means authenticated.
+ * If `agent status` does not exit within 15s, proceeds as ok (avoids hang on slow/headless env).
  */
-export async function verifyAuth(): Promise<{ ok: boolean; error?: string }> {
+export async function verifyAuth(): Promise<{ ok: boolean; error?: string; timedOut?: boolean }> {
   return new Promise((resolve) => {
     const proc = spawn("agent", ["status"], { stdio: "pipe", env: process.env });
-    let stderr = "";
-    proc.stderr?.on("data", (c: Buffer) => { stderr += c.toString(); });
+    let settled = false;
+
+    const finish = (ok: boolean, error?: string, timedOut?: boolean) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(tid);
+      try { proc.kill("SIGTERM"); } catch { /* ignore */ }
+      resolve({ ok, error, timedOut });
+    };
+
+    const tid = setTimeout(() => {
+      finish(true, undefined, true);
+    }, AUTH_CHECK_TIMEOUT_MS);
+
+    proc.stderr?.on("data", (_c: Buffer) => {});
     proc.on("error", () => {
-      resolve({ ok: false, error: "agent not found" });
+      finish(false, "agent not found");
     });
     proc.on("close", (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(tid);
       if (code === 0) {
         resolve({ ok: true });
       } else {

@@ -38,7 +38,11 @@ async function main(): Promise<void> {
       console.error("Either run 'agent login' (browser session) or set CURSOR_API_KEY.");
       process.exit(1);
     }
-    console.log("  Auth: OK (session or CURSOR_API_KEY)\n");
+    if (authCheck.timedOut) {
+      console.log("  Auth: check timed out (proceeding). If chat fails, run 'agent login' or set CURSOR_API_KEY.\n");
+    } else {
+      console.log("  Auth: OK (session or CURSOR_API_KEY)\n");
+    }
   } else {
     console.log("Skipping CLI check (--skip-cli-check).\n");
   }
