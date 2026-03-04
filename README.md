@@ -12,7 +12,7 @@ Reference: [claude-max-api-proxy](https://github.com/mnemon-dev/claude-max-api-p
 2. Cursor Agent CLI installed and authenticated:
    - Install: `curl https://cursor.com/install -fsS | bash`
    - Auth: run `agent login` (browser session, recommended) or set CURSOR_API_KEY (Integrations > User API Keys).
-3. Node.js >= 20.
+3. Node.js `v24.14.0` (Active LTS recommended, npm 10.x).
 
 ## Setup
 
@@ -43,7 +43,7 @@ npm start
 ## Endpoints
 
 | Endpoint | Method | Description |
-|----------|--------|-------------|
+| -------- | ------ | ----------- |
 | /health | GET | Health check |
 | /v1/models | GET | List models |
 | /v1/chat/completions | POST | Chat (streaming and non-streaming) |

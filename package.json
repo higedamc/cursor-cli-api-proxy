@@ -12,14 +12,18 @@
   "keywords": ["cursor", "cursor-cli", "openai-compatible", "api-proxy"],
   "license": "MIT",
   "dependencies": {
-    "express": "^4.21.2",
-    "uuid": "^11.0.5"
+    "express": "4.22.1",
+    "uuid": "11.0.5"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.10.7",
-    "@types/uuid": "^10.0.0",
-    "typescript": "^5.7.3"
+    "@types/express": "5.0.6",
+    "@types/node": "22.19.13",
+    "@types/uuid": "10.0.0",
+    "typescript": "5.9.2"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=24.14.0 <25",
+    "npm": ">=10 <11"
+  },
+  "packageManager": "npm@10.9.0"
 }
